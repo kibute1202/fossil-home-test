@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.data.remote.NetworkHelper;
+import com.sdt.fossilhometest.data.remote.api.UserApi;
 import com.sdt.fossilhometest.utils.Constants;
 
 import javax.inject.Named;
@@ -27,6 +28,12 @@ public class NetworkModule {
     @Singleton
     Retrofit provideRetrofit(@Named(Constants.BASE_URL_NAME) String baseUrl) {
         return NetworkHelper.createRetrofit(baseUrl);
+    }
+
+    @Provides
+    @Singleton
+    UserApi provideUserApi(Retrofit retrofit) {
+        return retrofit.create(UserApi.class);
     }
 
 }
