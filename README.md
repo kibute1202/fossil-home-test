@@ -18,7 +18,7 @@ their favorite user.
 + Provide option for user to see only SOF user that has been bookmarked.
 + When the app is restarted, all bookmark setting must be maintained.
 + Application is required to work smoothly while user scrolls down to more SOF user.
-+ API Information: https://api.stackexchange.com/2.2/users?page=1&pagesize=30&site=stackoverflow
++ API Information: [Link](https://api.stackexchange.com/2.2/users?page=1&pagesize=30&site=stackoverflow)
 
 #### 2. SOF User Reputation
 + User can click on any SOF user to see their detail reputation.
