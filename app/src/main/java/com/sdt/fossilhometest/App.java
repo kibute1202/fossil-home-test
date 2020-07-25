@@ -1,5 +1,8 @@
 package com.sdt.fossilhometest;
 
+import android.content.Context;
+
+import androidx.multidex.MultiDex;
 
 import com.sdt.fossilhometest.di.DaggerApplicationComponent;
 
@@ -15,6 +18,12 @@ public class App extends DaggerApplication {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     @Override

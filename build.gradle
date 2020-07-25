@@ -45,6 +45,7 @@ ext {
     pagingVersion = "3.0.0-alpha03"
     retrofitVersion = '2.9.0'
     okhttpLoggingInterceptorVersion = '4.4.0'
+    multidexVersion = '2.0.1'
 
     dagger2Version = '2.25.4'
     rxjava2Version = '2.2.8'
