@@ -22,4 +22,4 @@ their favorite user.
 
 #### 2. SOF User Reputation
 + User can click on any SOF user to see their detail reputation.
-+ API Information: https://api.stackexchange.com/2.2/users/userid/reputation-history?page=1&pagesize=30&site=stackoverflow
++ API Information: [Link](https://api.stackexchange.com/2.2/users/userid/reputation-history?page=1&pagesize=30&site=stackoverflow)
