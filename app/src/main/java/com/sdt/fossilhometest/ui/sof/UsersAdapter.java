@@ -25,6 +25,11 @@ public class UsersAdapter extends BaseAdapter<User, ItemUserBinding> {
     }
 
     @Override
+    protected boolean enableStartAnimation() {
+        return false;
+    }
+
+    @Override
     protected int getLayoutRes(int viewType) {
         return R.layout.item_user;
     }

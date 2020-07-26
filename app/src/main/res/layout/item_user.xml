@@ -14,18 +14,91 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:background="@color/background"
+    android:paddingTop="16dp">
 
     <TextView
+      android:id="@+id/tvLastAccessDate"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{ item.displayName }"
-      android:textColor="@color/colorPrimaryText"
-      android:textSize="15sp"
-      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_marginEnd="16dp"
+      android:layout_marginRight="16dp"
+      android:text="12/02/2020"
+      android:textColor="@color/colorSecondaryText"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toBottomOf="@+id/tvDisplayName"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/tvDisplayName" />
+
+    <ImageView
+      android:id="@+id/ivAvatar"
+      circleImageUrl="@{ item.profileImage }"
+      placeholder="@{ @drawable/ic_default_user }"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginLeft="16dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      tools:text="Jony" />
+      app:srcCompat="@drawable/ic_default_user" />
+
+    <TextView
+      android:id="@+id/tvDisplayName"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="30dp"
+      android:layout_marginLeft="20dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginRight="16dp"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:text="@{ item.displayName }"
+      android:textColor="@color/colorPrimaryText"
+      android:textSize="18sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toTopOf="@+id/tvLocation"
+      app:layout_constraintEnd_toStartOf="@+id/tvLastAccessDate"
+      app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+      app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+      app:layout_constraintVertical_chainStyle="spread_inside"
+      tools:text="Jon Skeet" />
+
+    <TextView
+      android:id="@+id/tvLocation"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:text="@{ item.location }"
+      android:textColor="@color/colorSecondaryText"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toTopOf="@+id/tvReputation"
+      app:layout_constraintEnd_toEndOf="@+id/tvDisplayName"
+      app:layout_constraintStart_toStartOf="@+id/tvDisplayName"
+      app:layout_constraintTop_toBottomOf="@+id/tvDisplayName"
+      tools:text="Reading, United Kingdom" />
+
+    <TextView
+      android:id="@+id/tvReputation"
+      numberToText="@{ item.reputation }"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/bg_reputation"
+      android:textColor="@color/colorPrimaryText"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
+      app:layout_constraintStart_toStartOf="@+id/tvDisplayName"
+      app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+      tools:text="100000" />
+
+    <View
+      android:id="@+id/divider"
+      android:layout_width="match_parent"
+      android:layout_height="0.8dp"
+      android:layout_marginTop="16dp"
+      android:background="@color/colorDivider"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/tvReputation" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

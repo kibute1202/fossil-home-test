@@ -300,6 +300,7 @@ public class User {
             "userId=" + userId +
             ", lastAccessDate=" + lastAccessDate +
             ", reputation=" + reputation +
+            ", location='" + location + '\'' +
             ", profileImage='" + profileImage + '\'' +
             ", displayName='" + displayName + '\'' +
             '}';

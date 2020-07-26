@@ -2,6 +2,8 @@ package com.sdt.fossilhometest.ui.sof;
 
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.databinding.ActivityUsersBinding;
 import com.sdt.fossilhometest.ui.base.BaseActivity;
@@ -23,6 +25,10 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     }
 
     private void setupUI() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.sof_users);
+        }
+
         usersAdapter = new UsersAdapter();
         viewDataBinding.rvUsers.setAdapter(usersAdapter);
     }

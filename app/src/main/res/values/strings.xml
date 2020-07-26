@@ -9,5 +9,7 @@
 
   <!--common-->
   <string name="ok">OK</string>
+  <string name="users">Users</string>
+  <string name="sof_users">Stack OverFlow Users</string>
 
 </resources>

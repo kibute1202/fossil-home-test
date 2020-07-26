@@ -52,7 +52,7 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
                         List<User> result = response.body() == null
                             ? Collections.emptyList()
                             : ListUtils.safe(response.body().getUsers());
-                        Timber.i("items size = %d", result.size());
+                        Timber.i("init items size = %d", result.size());
 
                         callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
 
@@ -92,8 +92,8 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
                         UserResponse userResponse = response.body();
                         if (userResponse != null) {
                             Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
-                            Timber.i("nextKey = %d", nextKey);
                             Timber.i("items size = %d", ListUtils.safe(userResponse.getUsers()).size());
+                            Timber.i("nextKey = %d", nextKey);
                             callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
                         }
 
