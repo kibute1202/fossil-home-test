@@ -8,6 +8,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sdt.fossilhometest.utils.StringUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 @Entity(tableName = "users")
 public class User {
 
@@ -196,7 +198,7 @@ public class User {
     }
 
     public String getUserType() {
-        return StringUtils.safeString(userType);
+        return StringUtils.safe(userType);
     }
 
     public void setUserType(String userType) {
@@ -220,7 +222,7 @@ public class User {
     }
 
     public String getLocation() {
-        return StringUtils.safeString(location);
+        return StringUtils.safe(location);
     }
 
     public void setLocation(String location) {
@@ -228,7 +230,7 @@ public class User {
     }
 
     public String getWebsiteUrl() {
-        return StringUtils.safeString(websiteUrl);
+        return StringUtils.safe(websiteUrl);
     }
 
     public void setWebsiteUrl(String websiteUrl) {
@@ -236,7 +238,7 @@ public class User {
     }
 
     public String getLink() {
-        return StringUtils.safeString(link);
+        return StringUtils.safe(link);
     }
 
     public void setLink(String link) {
@@ -244,7 +246,7 @@ public class User {
     }
 
     public String getProfileImage() {
-        return StringUtils.safeString(profileImage);
+        return StringUtils.safe(profileImage);
     }
 
     public void setProfileImage(String profileImage) {
@@ -252,7 +254,7 @@ public class User {
     }
 
     public String getDisplayName() {
-        return StringUtils.safeString(displayName);
+        return StringUtils.safe(displayName);
     }
 
     public void setDisplayName(String displayName) {
@@ -291,4 +293,15 @@ public class User {
         return 31 + Integer.valueOf(userId).hashCode();
     }
 
+    @NotNull
+    @Override
+    public String toString() {
+        return "User{" +
+            "userId=" + userId +
+            ", lastAccessDate=" + lastAccessDate +
+            ", reputation=" + reputation +
+            ", profileImage='" + profileImage + '\'' +
+            ", displayName='" + displayName + '\'' +
+            '}';
+    }
 }

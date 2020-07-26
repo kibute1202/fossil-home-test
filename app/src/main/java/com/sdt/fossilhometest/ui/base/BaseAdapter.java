@@ -9,8 +9,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -19,7 +19,7 @@ import com.sdt.fossilhometest.R;
 
 import java.util.List;
 
-public abstract class BaseAdapter<T, V extends ViewDataBinding> extends ListAdapter<T, BaseAdapter.BaseViewHolder<V>> {
+public abstract class BaseAdapter<T, V extends ViewDataBinding> extends PagedListAdapter<T, BaseAdapter.BaseViewHolder<V>> {
 
     protected BaseAdapter(@NonNull DiffUtil.ItemCallback<T> diffCallback) {
         super(diffCallback);
@@ -42,7 +42,7 @@ public abstract class BaseAdapter<T, V extends ViewDataBinding> extends ListAdap
     public void onBindViewHolder(@NonNull BaseViewHolder<V> holder, int position) {
         T item = getItem(position);
         if (item != null) {
-//            holder.viewDataBinding.setVariable(BR.item, item);
+            holder.viewDataBinding.setVariable(BR.item, item);
             bindView(holder.viewDataBinding, item, position);
             holder.viewDataBinding.executePendingBindings();
             setupAnimation(holder);

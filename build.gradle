@@ -42,7 +42,7 @@ ext {
     gsonVersion = '2.8.6'
     glideVersion = '4.11.0'
     roomDatabaseVersion = '2.2.5'
-    pagingVersion = "3.0.0-alpha03"
+    pagingVersion = "2.1.2"
     retrofitVersion = '2.9.0'
     okhttpLoggingInterceptorVersion = '4.4.0'
     multidexVersion = '2.0.1'

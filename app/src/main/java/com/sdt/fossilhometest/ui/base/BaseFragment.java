@@ -57,7 +57,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         viewDataBinding = DataBindingUtil.inflate(inflater, layoutResId(), container, false);
-//        viewDataBinding.setVariable(BR.viewModel, viewModel);
+        viewDataBinding.setVariable(BR.viewModel, viewModel);
         viewDataBinding.setLifecycleOwner(getViewLifecycleOwner());
         viewDataBinding.executePendingBindings();
         return viewDataBinding.getRoot();

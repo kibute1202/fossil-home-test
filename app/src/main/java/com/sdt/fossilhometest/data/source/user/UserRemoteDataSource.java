@@ -1,15 +1,11 @@
 package com.sdt.fossilhometest.data.source.user;
 
-import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
 
-public class UserRemoteDataSource implements UserDataSource {
+public class UserRemoteDataSource implements UserDataSource.Remote {
 
     private UserApi api;
 
@@ -19,7 +15,7 @@ public class UserRemoteDataSource implements UserDataSource {
     }
 
     @Override
-    public Single<List<User>> getUsers(int page, int pageSize) {
-        return api.getUsers(page, pageSize);
+    public UserApi getUserApi() {
+        return api;
     }
 }

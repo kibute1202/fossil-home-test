@@ -5,10 +5,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public final class BindingUtils {
 
     private BindingUtils() {}
+
+    @BindingAdapter(value = {"verticalList"}, requireAll = false)
+    public static void setupVerticalList(RecyclerView view, boolean hasFixSize) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+            view.getContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        );
+        view.setLayoutManager(layoutManager);
+        view.setHasFixedSize(hasFixSize);
+    }
 
     @BindingAdapter({"colorFilter"})
     public static void setColorFilter(ProgressBar progressBar, int color) {

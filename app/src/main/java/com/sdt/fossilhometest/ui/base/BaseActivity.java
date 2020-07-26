@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 
+import com.sdt.fossilhometest.BR;
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.ui.custom.LoadingDialog;
 import com.sdt.fossilhometest.utils.DialogUtils;
@@ -76,7 +77,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     private void performDataBinding() {
         viewDataBinding = DataBindingUtil.setContentView(this, layoutResId());
-//        viewDataBinding.setVariable(BR.viewModel, viewModel);
+        viewDataBinding.setVariable(BR.viewModel, viewModel);
         viewDataBinding.executePendingBindings();
     }
 

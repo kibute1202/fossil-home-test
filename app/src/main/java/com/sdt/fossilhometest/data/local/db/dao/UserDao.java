@@ -1,6 +1,7 @@
 package com.sdt.fossilhometest.data.local.db.dao;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -27,6 +28,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM users")
     List<User> getAllUsers();
+
+    @Query("SELECT * FROM users")
+    DataSource.Factory<Integer, User> getPagingUsers();
 
     @Query("SELECT * FROM users")
     LiveData<List<User>> getUsersLiveData();
