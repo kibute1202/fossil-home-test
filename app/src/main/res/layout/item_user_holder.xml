@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/background"
+  android:paddingTop="16dp">
+
+  <View
+    android:id="@+id/tvLastAccessDate"
+    android:layout_width="100dp"
+    android:layout_height="20dp"
+    android:layout_marginEnd="16dp"
+    android:background="@drawable/bg_shimmer"
+    android:layout_marginRight="16dp"
+    app:layout_constraintBottom_toBottomOf="@+id/tvDisplayName"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/tvDisplayName" />
+
+  <View
+    android:id="@+id/ivAvatar"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:background="@drawable/bg_circle_shimmer"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <View
+    android:id="@+id/tvDisplayName"
+    android:layout_width="0dp"
+    android:layout_height="25dp"
+    android:layout_marginStart="30dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp"
+    android:background="@drawable/bg_shimmer"
+    app:layout_constraintBottom_toTopOf="@+id/tvLocation"
+    app:layout_constraintEnd_toStartOf="@+id/tvLastAccessDate"
+    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+    app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+    app:layout_constraintVertical_chainStyle="spread_inside" />
+
+  <View
+    android:id="@+id/tvLocation"
+    android:layout_width="0dp"
+    android:layout_height="20dp"
+    android:background="@drawable/bg_shimmer"
+    app:layout_constraintBottom_toTopOf="@+id/tvReputation"
+    app:layout_constraintEnd_toEndOf="@+id/tvDisplayName"
+    app:layout_constraintStart_toStartOf="@+id/tvDisplayName"
+    app:layout_constraintTop_toBottomOf="@+id/tvDisplayName" />
+
+  <View
+    android:id="@+id/tvReputation"
+    android:layout_width="65dp"
+    android:layout_height="25dp"
+    android:background="@drawable/bg_circle_corner_shimmer"
+    android:textColor="@color/colorPrimaryText"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
+    app:layout_constraintStart_toStartOf="@+id/tvDisplayName"
+    app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+    tools:text="100000" />
+
+  <View
+    android:id="@+id/divider"
+    android:layout_width="match_parent"
+    android:layout_height="0.8dp"
+    android:layout_marginTop="16dp"
+    android:background="@color/colorDivider"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tvReputation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

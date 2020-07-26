@@ -26,5 +26,15 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
+    <ViewStub
+      android:id="@+id/loadingViewStub"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout="@layout/layout_loading_users"
+      app:layout_constraintBottom_toBottomOf="@+id/rvUsers"
+      app:layout_constraintEnd_toEndOf="@+id/rvUsers"
+      app:layout_constraintStart_toStartOf="@+id/rvUsers"
+      app:layout_constraintTop_toTopOf="@+id/rvUsers" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

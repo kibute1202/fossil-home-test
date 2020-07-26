@@ -14,5 +14,6 @@
   <color name="background">#383c41</color>
   <color name="colorAccent1">#c34b3a</color>
   <color name="colorAccent2">#a59e4e</color>
+  <color name="colorShimmer">#B2B7C7</color>
 
 </resources>

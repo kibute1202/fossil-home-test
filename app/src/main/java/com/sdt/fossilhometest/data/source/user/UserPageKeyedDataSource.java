@@ -11,6 +11,7 @@ import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
 import com.sdt.fossilhometest.utils.Constants;
 import com.sdt.fossilhometest.utils.ListUtils;
+import com.sdt.fossilhometest.utils.ThreadUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,8 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
                             @NonNull LoadInitialCallback<Integer, User> callback) {
         initLoading.postValue(NetworkState.LOADING);
         networkState.postValue(NetworkState.LOADING);
+
+        ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
 
         userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
             .enqueue(new Callback<UserResponse>() {

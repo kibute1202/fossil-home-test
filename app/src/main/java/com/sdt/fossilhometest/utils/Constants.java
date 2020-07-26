@@ -8,6 +8,7 @@ public final class Constants {
 
     public static final int PAGE_SIZE = 30;
     public static final int INITIAL_PAGE = 1;
+    public static final long LAZY_LOADING_TIME = 2000;
 
     private Constants() {}
 

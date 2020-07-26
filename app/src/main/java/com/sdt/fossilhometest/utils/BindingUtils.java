@@ -3,6 +3,7 @@ package com.sdt.fossilhometest.utils;
 
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +23,10 @@ import com.sdt.fossilhometest.R;
 public final class BindingUtils {
 
     private BindingUtils() {
+    }
+
+    public static void gone(View view) {
+        view.setVisibility(View.GONE);
     }
 
     @BindingAdapter(
