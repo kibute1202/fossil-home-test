@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
 
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.db.ReputationHistory;
+import com.sdt.fossilhometest.data.model.db.ReputationHistory;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
 import com.sdt.fossilhometest.utils.Constants;
@@ -19,11 +20,12 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-public class ReputationDataSource extends PageKeyedDataSource<Integer, User> {
+public class ReputationDataSource extends PageKeyedDataSource<Integer, ReputationHistory> {
 
     private static final String TAG = "ReputationDataSource";
 
     private final UserApi userApi;
+    private final Integer userId;
 
     private MutableLiveData<NetworkState> networkState;
     private CompositeDisposable compositeDisposable;
@@ -32,14 +34,16 @@ public class ReputationDataSource extends PageKeyedDataSource<Integer, User> {
     private boolean doRetryInitial = false;
 
     private LoadInitialParams<Integer> retryInitialParams;
-    private LoadInitialCallback<Integer, User> retryInitialCallback;
+    private LoadInitialCallback<Integer, ReputationHistory> retryInitialCallback;
 
     private LoadParams<Integer> retryParams;
-    private LoadCallback<Integer, User> retryCallback;
+    private LoadCallback<Integer, ReputationHistory> retryCallback;
 
-    public ReputationDataSource(UserApi userApi,
+    public ReputationDataSource(Integer userId,
+                                UserApi userApi,
                                 Executor retryExecutor,
                                 CompositeDisposable compositeDisposable) {
+        this.userId = userId;
         this.userApi = userApi;
         this.retryExecutor = retryExecutor;
         this.compositeDisposable = compositeDisposable;
@@ -49,15 +53,15 @@ public class ReputationDataSource extends PageKeyedDataSource<Integer, User> {
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params,
-                            @NonNull LoadInitialCallback<Integer, User> callback) {
+                            @NonNull LoadInitialCallback<Integer, ReputationHistory> callback) {
 
         networkState.postValue(NetworkState.LOADING);
 
         ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
 
-        Disposable disposable = userApi.getReputationHistories(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
+        Disposable disposable = userApi.getReputationHistories(userId, Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
             .subscribe(response -> {
-                List<User> result = ListUtils.safe(response.getItems());
+                List<ReputationHistory> result = ListUtils.safe(response.getItems());
                 callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
                 networkState.postValue(NetworkState.LOADED);
             }, throwable -> {
@@ -72,19 +76,19 @@ public class ReputationDataSource extends PageKeyedDataSource<Integer, User> {
 
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params,
-                           @NonNull LoadCallback<Integer, User> callback) {
+                           @NonNull LoadCallback<Integer, ReputationHistory> callback) {
     }
 
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params,
-                          @NonNull LoadCallback<Integer, User> callback) {
+                          @NonNull LoadCallback<Integer, ReputationHistory> callback) {
         Timber.i("LoadUsers[page = %d, pageSize = %d]", params.key, params.requestedLoadSize);
 
         networkState.postValue(NetworkState.LOADING);
 
         ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
 
-        Disposable disposable = userApi.getReputationHistories(params.key, Constants.PAGE_SIZE)
+        Disposable disposable = userApi.getReputationHistories(userId, params.key, Constants.PAGE_SIZE)
             .subscribe(response -> {
                 Integer nextKey = response.isHasMore() ? params.key + 1 : null;
                 callback.onResult(ListUtils.safe(response.getItems()), nextKey);

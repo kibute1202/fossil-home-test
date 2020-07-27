@@ -1,8 +1,6 @@
 package com.sdt.fossilhometest.data.source.user;
 
 
-import androidx.paging.DataSource;
-
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
 import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
@@ -34,11 +32,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Single<List<Integer>> getBookmarkedUserIds() {
         return local.getBookmarkedUserIds();
-    }
-
-    @Override
-    public DataSource.Factory<Integer, User> getBookmarkedUsers() {
-        return local.getBookmarkedUsers();
     }
 
     @Override

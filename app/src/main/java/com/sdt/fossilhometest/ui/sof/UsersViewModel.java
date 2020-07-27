@@ -37,7 +37,6 @@ public class UsersViewModel extends BaseViewModel {
     private LiveData<PagedList<User>> pagedListUser;
 
     private MutableLiveData<List<Integer>> bookmarkedUserIds;
-    private DataSource.Factory<Integer, User> bookmarksFactory;
 
     private Filter filterUser;
 
