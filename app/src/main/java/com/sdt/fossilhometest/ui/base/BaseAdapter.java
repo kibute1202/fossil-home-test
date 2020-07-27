@@ -55,7 +55,7 @@ public abstract class BaseAdapter<T, V extends ViewDataBinding> extends PagedLis
         if (!payloads.isEmpty()) {
             T item = getItem(position);
             if (item != null) {
-//                holder.viewDataBinding.setVariable(BR.item, item);
+                holder.viewDataBinding.setVariable(BR.item, item);
                 bindView(holder.viewDataBinding, item, position, payloads);
                 holder.viewDataBinding.executePendingBindings();
                 setupAnimation(holder);
@@ -90,11 +90,15 @@ public abstract class BaseAdapter<T, V extends ViewDataBinding> extends PagedLis
 
     public static class BaseViewHolder<V extends ViewDataBinding> extends RecyclerView.ViewHolder {
 
-        V viewDataBinding;
+        protected V viewDataBinding;
 
         public BaseViewHolder(@NonNull V viewDataBinding) {
             super(viewDataBinding.getRoot());
             this.viewDataBinding = viewDataBinding;
+        }
+
+        public V getViewDataBinding() {
+            return viewDataBinding;
         }
     }
 }

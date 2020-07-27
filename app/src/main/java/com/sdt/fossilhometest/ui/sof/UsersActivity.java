@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.ViewStub;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.data.remote.NetworkState;
@@ -14,8 +15,6 @@ import com.sdt.fossilhometest.utils.BindingUtils;
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
     private UsersAdapter usersAdapter;
-
-    private ViewStub loadingViewStub;
 
     @Override
     protected int layoutResId() {
@@ -30,17 +29,15 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     }
 
     private void setupUI() {
-        loadingViewStub = viewDataBinding.loadingViewStub.getViewStub();
-        if (loadingViewStub != null) {
-            loadingViewStub.inflate();
-        }
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.sof_users);
         }
 
         usersAdapter = new UsersAdapter();
+        usersAdapter.setOnRetryListener(() -> viewModel.retryFetchUsers());
         viewDataBinding.rvUsers.setAdapter(usersAdapter);
+
+        viewDataBinding.swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
     }
 
     private void observeData() {
@@ -49,12 +46,22 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         });
 
         viewModel.getNetworkState().observe(this, networkState -> {
+            usersAdapter.setNetworkState(networkState);
             if (networkState == NetworkState.LOADED) {
-                if (loadingViewStub != null) {
-                    BindingUtils.gone(loadingViewStub);
-                }
+                viewDataBinding.swipeRefreshLayout.setRefreshing(false);
+            } else if (networkState.getStatus() == NetworkState.Status.FAILED) {
+                viewDataBinding.swipeRefreshLayout.setRefreshing(false);
+                handleNetworkError(networkState.getCause());
             }
         });
+    }
+
+    private void handleNetworkError(Throwable cause) {
+        if (usersAdapter.getItemCount() == 0) {
+
+        } else {
+
+        }
     }
 
 }

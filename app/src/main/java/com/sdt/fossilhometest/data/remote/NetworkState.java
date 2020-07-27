@@ -5,20 +5,20 @@ public final class NetworkState {
     public static NetworkState LOADED = new NetworkState(Status.SUCCESS);
     public static NetworkState LOADING = new NetworkState(Status.RUNNING);
 
-    public static NetworkState error(String message) {
-        return new NetworkState(Status.FAILED, message);
+    public static NetworkState error(Throwable cause) {
+        return new NetworkState(Status.FAILED, cause);
     }
 
     private Status status;
-    private String message;
+    private Throwable cause;
 
     public NetworkState(Status status) {
         this.status = status;
     }
 
-    public NetworkState(Status status, String message) {
+    public NetworkState(Status status, Throwable cause) {
         this.status = status;
-        this.message = message;
+        this.cause = cause;
     }
 
     public Status getStatus() {
@@ -29,12 +29,12 @@ public final class NetworkState {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public Throwable getCause() {
+        return cause;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCause(Throwable cause) {
+        this.cause = cause;
     }
 
     public enum Status {

@@ -3,6 +3,7 @@
   <color name="colorPrimary">#23262b</color>
   <color name="colorPrimaryDark">#23262b</color>
   <color name="colorAccent">#3badcc</color>
+  <color name="colorDarkAccent">#29758A</color>
 
   <color name="colorText">@color/white</color>
   <color name="colorPrimaryText">#edeeee</color>
@@ -15,5 +16,6 @@
   <color name="colorAccent1">#c34b3a</color>
   <color name="colorAccent2">#a59e4e</color>
   <color name="colorShimmer">#B2B7C7</color>
+  <color name="colorLightShimmer">#F4F9FA</color>
 
 </resources>

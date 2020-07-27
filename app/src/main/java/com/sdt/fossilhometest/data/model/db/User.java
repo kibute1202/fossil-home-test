@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 @Entity(tableName = "users")
 public class User {
 
+    public static final User EMPTY = new User();
+
     @PrimaryKey
     @SerializedName("user_id")
     @Expose
@@ -266,26 +268,7 @@ public class User {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return getAccountId() == user.getAccountId() &&
-            isEmployee() == user.isEmployee() &&
-            getLastModifiedDate() == user.getLastModifiedDate() &&
-            getLastAccessDate() == user.getLastAccessDate() &&
-            getReputationChangeYear() == user.getReputationChangeYear() &&
-            getReputationChangeQuarter() == user.getReputationChangeQuarter() &&
-            getReputationChangeMonth() == user.getReputationChangeMonth() &&
-            getReputationChangeWeek() == user.getReputationChangeWeek() &&
-            getReputationChangeDay() == user.getReputationChangeDay() &&
-            getReputation() == user.getReputation() &&
-            getCreationDate() == user.getCreationDate() &&
-            getUserId() == user.getUserId() &&
-            getAcceptRate() == user.getAcceptRate() &&
-            getBadgeCounts().equals(user.getBadgeCounts()) &&
-            getUserType().equals(user.getUserType()) &&
-            getLocation().equals(user.getLocation()) &&
-            getWebsiteUrl().equals(user.getWebsiteUrl()) &&
-            getLink().equals(user.getLink()) &&
-            getProfileImage().equals(user.getProfileImage()) &&
-            getDisplayName().equals(user.getDisplayName());
+        return getUserId() == user.getUserId();
     }
 
     @Override

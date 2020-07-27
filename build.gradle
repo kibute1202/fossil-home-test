@@ -37,6 +37,7 @@ ext {
     // App dependencies
     supportLibraryVersion = '1.0.2'
     materialVersion = '1.1.0'
+    swipeRefreshLayoutVersion = '1.1.0'
     vectorDrawableVersion = '1.0.1'
     animatedVectorDrawableVersion = '1.0.0'
     gsonVersion = '2.8.6'

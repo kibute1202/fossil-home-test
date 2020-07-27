@@ -26,7 +26,21 @@ public final class BindingUtils {
     }
 
     public static void gone(View view) {
-        view.setVisibility(View.GONE);
+        if (view != null) {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    public static void visible(View view) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public static void invisible(View view) {
+        if (view != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
     }
 
     @BindingAdapter(

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/bg_corner_shimmer"
+    android:padding="20dp">
+
+    <TextView
+      android:id="@+id/tvTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/something_went_wrong"
+      android:textColor="@android:color/black"
+      android:textSize="18sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toTopOf="@+id/tvMessage"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+      android:id="@+id/tvMessage"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/users_error"
+      android:textColor="@android:color/black"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toTopOf="@+id/retry"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <Button
+      android:id="@+id/retry"
+      android:layout_width="wrap_content"
+      android:layout_height="35dp"
+      android:background="@drawable/bg_base_button"
+      android:text="@string/retry"
+      android:textAllCaps="false"
+      android:layout_marginTop="10dp"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/tvMessage" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

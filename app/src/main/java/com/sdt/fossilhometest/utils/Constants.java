@@ -10,6 +10,8 @@ public final class Constants {
     public static final int INITIAL_PAGE = 1;
     public static final long LAZY_LOADING_TIME = 2000;
 
+    public static final int DEFAULT_THREAD_POOL = 5;
+
     private Constants() {}
 
 }

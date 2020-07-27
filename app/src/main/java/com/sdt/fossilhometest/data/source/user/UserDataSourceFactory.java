@@ -9,7 +9,12 @@ import com.sdt.fossilhometest.data.local.db.dao.UserDao;
 import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import javax.inject.Inject;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 public class UserDataSourceFactory extends DataSource.Factory<Integer, User> {
 
@@ -18,20 +23,37 @@ public class UserDataSourceFactory extends DataSource.Factory<Integer, User> {
 
     private final UserApi userApi;
     private final UserDao userDao;
+    private final Executor executor;
+    private final CompositeDisposable compositeDisposable;
 
-    @Inject
-    public UserDataSourceFactory(UserApi userApi, UserDao userDao) {
-        this.sourceLiveData = new MutableLiveData<>();
+    public UserDataSourceFactory(UserApi userApi, UserDao userDao,
+                                 Executor executor,
+                                 CompositeDisposable compositeDisposable) {
         this.userApi = userApi;
         this.userDao = userDao;
+        this.executor = executor;
+        this.compositeDisposable = compositeDisposable;
+        this.sourceLiveData = new MutableLiveData<>();
     }
 
     @NonNull
     @Override
     public DataSource<Integer, User> create() {
-        dataSource = new UserPageKeyedDataSource(userApi);
+        dataSource = new UserPageKeyedDataSource(userApi, executor, compositeDisposable);
         sourceLiveData.postValue(dataSource);
         return dataSource;
+    }
+
+    public void refresh() {
+        if (dataSource != null) {
+            dataSource.invalidate();
+        }
+    }
+
+    public void doRetry() {
+        if (dataSource != null) {
+            dataSource.doRetry();
+        }
     }
 
     public MutableLiveData<UserPageKeyedDataSource> getSourceLiveData() {

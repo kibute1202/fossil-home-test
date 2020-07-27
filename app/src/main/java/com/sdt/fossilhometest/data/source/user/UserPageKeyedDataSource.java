@@ -17,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> {
@@ -30,48 +30,51 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
     private final UserApi userApi;
 
     private MutableLiveData<NetworkState> networkState;
-    private MutableLiveData<NetworkState> initLoading;
+    private CompositeDisposable compositeDisposable;
 
-    public UserPageKeyedDataSource(UserApi userApi) {
+    /**
+     * Handle retry fetch data
+     */
+    private Executor retryExecutor;
+    private boolean doRetryInitial = false;
+
+    private LoadInitialParams<Integer> retryInitialParams;
+    private LoadInitialCallback<Integer, User> retryInitialCallback;
+
+    private LoadParams<Integer> retryParams;
+    private LoadCallback<Integer, User> retryCallback;
+
+    public UserPageKeyedDataSource(UserApi userApi,
+                                   Executor retryExecutor,
+                                   CompositeDisposable compositeDisposable) {
         this.userApi = userApi;
-        initLoading = new MutableLiveData<>();
+        this.retryExecutor = retryExecutor;
+        this.compositeDisposable = compositeDisposable;
+
         networkState = new MutableLiveData<>();
     }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params,
                             @NonNull LoadInitialCallback<Integer, User> callback) {
-        initLoading.postValue(NetworkState.LOADING);
+
         networkState.postValue(NetworkState.LOADING);
 
         ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
 
-        userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
-            .enqueue(new Callback<UserResponse>() {
-                @Override
-                public void onResponse(@NotNull Call<UserResponse> call,
-                                       @NotNull Response<UserResponse> response) {
-                    if (response.isSuccessful()) {
-                        List<User> result = response.body() == null
-                            ? Collections.emptyList()
-                            : ListUtils.safe(response.body().getUsers());
-                        Timber.i("init items size = %d", result.size());
-
-                        callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
-
-                        initLoading.postValue(NetworkState.LOADED);
-                        networkState.postValue(NetworkState.LOADED);
-                    } else {
-                        initLoading.postValue(NetworkState.error(response.message()));
-                        networkState.postValue(NetworkState.error(response.message()));
-                    }
-                }
-
-                @Override
-                public void onFailure(@NotNull Call<UserResponse> call, @NotNull Throwable t) {
-                    handleError(t);
-                }
+        Disposable disposable = userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
+            .subscribe(userResponse -> {
+                List<User> result = ListUtils.safe(userResponse.getUsers());
+                callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
+                networkState.postValue(NetworkState.LOADED);
+            }, throwable -> {
+                retryInitialParams = params;
+                retryInitialCallback = callback;
+                doRetryInitial = true;
+                handleError(throwable);
             });
+
+        compositeDisposable.add(disposable);
     }
 
     @Override
@@ -86,44 +89,39 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
 
         networkState.postValue(NetworkState.LOADING);
 
-        userApi.getUsers(params.key, Constants.PAGE_SIZE)
-            .enqueue(new Callback<UserResponse>() {
-                @Override
-                public void onResponse(@NotNull Call<UserResponse> call,
-                                       @NotNull Response<UserResponse> response) {
-                    if (response.isSuccessful()) {
-                        UserResponse userResponse = response.body();
-                        if (userResponse != null) {
-                            Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
-                            Timber.i("items size = %d", ListUtils.safe(userResponse.getUsers()).size());
-                            Timber.i("nextKey = %d", nextKey);
-                            callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
-                        }
+        ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
 
-                        networkState.postValue(NetworkState.LOADED);
-                    } else {
-                        initLoading.postValue(NetworkState.error(response.message()));
-                        networkState.postValue(NetworkState.error(response.message()));
-                    }
-                }
-
-                @Override
-                public void onFailure(@NotNull Call<UserResponse> call, @NotNull Throwable t) {
-                    handleError(t);
-                }
+        Disposable disposable = userApi.getUsers(params.key, Constants.PAGE_SIZE)
+            .subscribe(userResponse -> {
+                Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
+                callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
+                networkState.postValue(NetworkState.LOADED);
+            }, throwable -> {
+                doRetryInitial = false;
+                retryParams = params;
+                retryCallback = callback;
+                handleError(throwable);
             });
+
+        compositeDisposable.add(disposable);
+    }
+
+    public void doRetry() {
+        retryExecutor.execute(() -> {
+            if (doRetryInitial) {
+                loadInitial(retryInitialParams, retryInitialCallback);
+            } else {
+                loadAfter(retryParams, retryCallback);
+            }
+        });
     }
 
     private void handleError(Throwable t) {
-        String errorMessage = t.getMessage();
-        networkState.postValue(NetworkState.error(errorMessage));
+        networkState.postValue(NetworkState.error(t));
     }
 
     public MutableLiveData<NetworkState> getNetworkState() {
         return networkState;
     }
 
-    public MutableLiveData<NetworkState> getInitLoading() {
-        return initLoading;
-    }
 }
