@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
 
-import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.db.ReputationHistory;
-import com.sdt.fossilhometest.data.model.db.ReputationHistory;
+import com.sdt.fossilhometest.data.model.ReputationHistory;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
 import com.sdt.fossilhometest.utils.Constants;

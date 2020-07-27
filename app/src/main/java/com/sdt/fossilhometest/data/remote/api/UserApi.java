@@ -1,8 +1,8 @@
 package com.sdt.fossilhometest.data.remote.api;
 
-import com.sdt.fossilhometest.data.model.api.Result;
-import com.sdt.fossilhometest.data.model.db.ReputationHistory;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.Result;
+import com.sdt.fossilhometest.data.model.ReputationHistory;
+import com.sdt.fossilhometest.data.model.User;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

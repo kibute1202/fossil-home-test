@@ -48,16 +48,12 @@ public final class BindingUtils {
     @BindingAdapter(
         value = {
             "circleImageUrl",
-            "placeholder",
-            "width",
-            "height"
+            "placeholder"
         }
     )
     public static void loadCircleImage(ImageView view,
                                        String url,
-                                       Drawable placeholder,
-                                       int width,
-                                       int height) {
+                                       Drawable placeholder) {
 
         if (TextUtils.isEmpty(url)) {
             view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -74,7 +70,6 @@ public final class BindingUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .signature(new ObjectKey(url))
                 .apply(requestOptions)
-                .override(width, height)
                 .into(view);
         }
 

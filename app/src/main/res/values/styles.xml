@@ -5,6 +5,10 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+
+    <!-- Set the transitions which are used for the entrance and exit of shared elements -->
+    <item name="android:windowSharedElementEnterTransition">@transition/detail_transition</item>
+    <item name="android:windowSharedElementExitTransition">@transition/detail_transition</item>
   </style>
 
   <style name="ProcessingDialogTheme">

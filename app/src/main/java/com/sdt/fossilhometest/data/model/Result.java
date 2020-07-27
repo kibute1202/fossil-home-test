@@ -1,4 +1,4 @@
-package com.sdt.fossilhometest.data.model.api;
+package com.sdt.fossilhometest.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

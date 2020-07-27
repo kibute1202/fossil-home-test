@@ -12,7 +12,7 @@
   <string name="users">Users</string>
   <string name="sof_users">Stack OverFlow Users</string>
   <string name="something_went_wrong">Something Went Wrong</string>
-  <string name="users_error">Users couldn\'t load. Please try again.</string>
+  <string name="data_error">Data couldn\'t load. Please try again.</string>
   <string name="retry">Retry</string>
   <string name="all">All</string>
   <string name="bookmark">Bookmark</string>
@@ -21,5 +21,10 @@
   <string name="cannot_remove_from_bookmark">Cannot remove user from Bookmark</string>
   <string name="remove_from_bookmark">Remove from Bookmarks</string>
   <string name="cannot_saved_to_bookmark">Cannot saved user to Bookmark</string>
+  <string name="reputation_history">Reputation History</string>
+  <string name="reputation">Reputation</string>
+  <string name="post_id_format">Post ID: %s</string>
+  <string name="creation_date_format">Creation Date: %s</string>
+  <string name="reputation_type_format">Reputation History Type: %s</string>
 
 </resources>

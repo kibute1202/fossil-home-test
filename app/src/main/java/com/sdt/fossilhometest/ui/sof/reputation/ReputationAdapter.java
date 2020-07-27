@@ -7,14 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
 
 import com.sdt.fossilhometest.R;
-import com.sdt.fossilhometest.data.model.db.ReputationHistory;
+import com.sdt.fossilhometest.data.model.ReputationHistory;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ItemLoadErrorBinding;
 import com.sdt.fossilhometest.databinding.ItemLoadingReputationBinding;
 import com.sdt.fossilhometest.databinding.ItemReputationHistoryBinding;
 import com.sdt.fossilhometest.ui.base.BasePagedListAdapter;
+import com.sdt.fossilhometest.utils.BindingUtils;
+import com.sdt.fossilhometest.utils.DateUtils;
 
 public class ReputationAdapter extends BasePagedListAdapter<ReputationHistory, ViewDataBinding> {
+
+    private OnItemListener onItemListener;
 
     public ReputationAdapter() {
         super(ReputationHistory.ITEM_CALLBACK);
@@ -85,9 +89,9 @@ public class ReputationAdapter extends BasePagedListAdapter<ReputationHistory, V
 
     private void bindLoadErrorView(ItemLoadErrorBinding viewDataBinding) {
         viewDataBinding.retry.setOnClickListener(v -> {
-//            if (onItemListener != null) {
-//                onItemListener.onRetry();
-//            }
+            if (onItemListener != null) {
+                onItemListener.onRetry();
+            }
         });
     }
 
@@ -99,9 +103,30 @@ public class ReputationAdapter extends BasePagedListAdapter<ReputationHistory, V
         }
     }
 
-    private void bindItemView(ItemReputationHistoryBinding viewDataBinding,
+    private void bindItemView(ItemReputationHistoryBinding binding,
                               ReputationHistory item, int position) {
 
+        binding.reputationChangeContainer.setBackgroundResource(
+            item.getReputationChange() < 0 ? R.drawable.bg_circle_red : R.drawable.bg_circle_green);
+        BindingUtils.setTextWithNumber(binding.tvReputationChange, item.getReputationChange());
+
+        String postId = String.format(stringRes(binding, R.string.post_id_format), item.getPostId());
+        binding.tvPostId.setText(postId);
+
+        String creationDate = DateUtils.getBaseDate(item.getCreationDate());
+        String creationDateFormat = String.format(stringRes(binding, R.string.creation_date_format), creationDate);
+        binding.tvCreationDate.setText(creationDateFormat);
+
+        String historyType = String.format(stringRes(binding, R.string.reputation_type_format), creationDate);
+        binding.tvReputationHistoryType.setText(historyType);
+    }
+
+    public void setOnItemListener(OnItemListener onItemListener) {
+        this.onItemListener = onItemListener;
+    }
+
+    public interface OnItemListener {
+        void onRetry();
     }
 
 }

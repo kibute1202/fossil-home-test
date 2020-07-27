@@ -1,5 +1,7 @@
 package com.sdt.fossilhometest.data.model.db;
 
+import com.sdt.fossilhometest.data.model.ReputationHistory;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

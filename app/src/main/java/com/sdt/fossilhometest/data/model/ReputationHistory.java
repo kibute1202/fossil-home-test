@@ -1,4 +1,4 @@
-package com.sdt.fossilhometest.data.model.db;
+package com.sdt.fossilhometest.data.model;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;

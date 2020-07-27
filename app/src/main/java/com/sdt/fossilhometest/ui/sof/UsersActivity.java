@@ -1,19 +1,25 @@
 package com.sdt.fossilhometest.ui.sof;
 
+import android.app.ActivityOptions;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.sdt.fossilhometest.R;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ActivityUsersBinding;
+import com.sdt.fossilhometest.databinding.ItemUserBinding;
 import com.sdt.fossilhometest.ui.base.BaseActivity;
 import com.sdt.fossilhometest.ui.sof.reputation.ReputationActivity;
+
+import java.util.List;
 
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
@@ -66,8 +72,8 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         }
 
         @Override
-        public void onClick(User user) {
-            startActivity(ReputationActivity.newIntent(UsersActivity.this, user));
+        public void onClick(User user, ItemUserBinding binding) {
+            toReputationHistory(user, binding);
         }
 
         @Override
@@ -80,6 +86,16 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
             handleRemoveFromBookmarks(user, position);
         }
     };
+
+    private void toReputationHistory(User user, ItemUserBinding binding) {
+        ActivityOptions options = ActivityOptions
+            .makeSceneTransitionAnimation(this,
+                Pair.create(binding.ivAvatar, ReputationActivity.VIEW_NAME_AVATAR_IMAGE),
+                Pair.create(binding.tvDisplayName, ReputationActivity.VIEW_NAME_DISPLAY_NAME_TITLE),
+                Pair.create(binding.tvLocation, ReputationActivity.VIEW_NAME_LOCATION_TITLE)
+            );
+        startActivity(ReputationActivity.newIntent(UsersActivity.this, user), options.toBundle());
+    }
 
     private void handleRemoveFromBookmarks(User user, int position) {
         viewModel.removeFromBookmarks(user, new UsersViewModel.BaseActionListener() {

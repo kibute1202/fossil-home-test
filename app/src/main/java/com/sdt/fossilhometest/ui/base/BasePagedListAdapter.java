@@ -1,12 +1,14 @@
 package com.sdt.fossilhometest.ui.base;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.paging.PagedListAdapter;
@@ -132,6 +134,14 @@ public abstract class BasePagedListAdapter<T, V extends ViewDataBinding> extends
         } else if (newExtraRow && previousState != newNetworkState) {
             notifyItemChanged(getItemCount() - 1);
         }
+    }
+
+    public Context context(ViewDataBinding binding) {
+        return binding.getRoot().getContext();
+    }
+
+    public String stringRes(ViewDataBinding binding, @StringRes int res) {
+        return context(binding).getString(res);
     }
 
     public static class BaseViewHolder<V extends ViewDataBinding> extends RecyclerView.ViewHolder {

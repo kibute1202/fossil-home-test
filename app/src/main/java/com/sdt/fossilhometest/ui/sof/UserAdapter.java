@@ -8,7 +8,7 @@ import androidx.collection.ArrayMap;
 import androidx.databinding.ViewDataBinding;
 
 import com.sdt.fossilhometest.R;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ItemLoadErrorBinding;
 import com.sdt.fossilhometest.databinding.ItemLoadingUserBinding;
@@ -110,7 +110,7 @@ public class UserAdapter extends BasePagedListAdapter<User, ViewDataBinding> {
 
         viewDataBinding.rootView.setOnClickListener(v -> {
             if (onItemListener != null) {
-                onItemListener.onClick(item);
+                onItemListener.onClick(item, viewDataBinding);
             }
         });
     }
@@ -160,7 +160,7 @@ public class UserAdapter extends BasePagedListAdapter<User, ViewDataBinding> {
     public interface OnItemListener {
         void onRetry();
 
-        void onClick(User user);
+        void onClick(User user, ItemUserBinding binding);
 
         void bookmark(User user, int position);
 

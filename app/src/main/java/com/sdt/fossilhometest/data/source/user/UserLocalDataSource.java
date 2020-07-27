@@ -4,7 +4,7 @@ import androidx.paging.DataSource;
 
 import com.sdt.fossilhometest.data.local.db.AppDatabase;
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.User;
 
 import java.util.List;
 

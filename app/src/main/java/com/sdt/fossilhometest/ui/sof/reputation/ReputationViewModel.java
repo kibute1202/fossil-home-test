@@ -1,14 +1,16 @@
 package com.sdt.fossilhometest.ui.sof.reputation;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.ReputationHistory;
+import com.sdt.fossilhometest.data.model.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
-import com.sdt.fossilhometest.data.source.user.UserDataSourceFactory;
-import com.sdt.fossilhometest.data.source.user.UserPageKeyedDataSource;
+import com.sdt.fossilhometest.data.source.reputation.ReputationDataSource;
+import com.sdt.fossilhometest.data.source.reputation.ReputationDataSourceFactory;
 import com.sdt.fossilhometest.data.source.user.UserRepository;
 import com.sdt.fossilhometest.ui.base.BaseViewModel;
 import com.sdt.fossilhometest.utils.Constants;
@@ -25,23 +27,27 @@ public class ReputationViewModel extends BaseViewModel {
 
     private ExecutorService executor;
     private PagedList.Config pagedListConfig;
-    private UserDataSourceFactory userDataSourceFactory;
+    private ReputationDataSourceFactory reputationDataSourceFactory;
     private LiveData<NetworkState> networkState;
-    private LiveData<PagedList<User>> pagedListUser;
+    private LiveData<PagedList<ReputationHistory>> pagedListReputationHistory;
+
+    private MutableLiveData<User> user = new MutableLiveData<>();
 
     @Inject
     public ReputationViewModel(SchedulerProvider schedulerProvider,
                                UserRepository userRepository) {
         super(schedulerProvider);
         this.userRepository = userRepository;
-        init();
     }
 
-    private void init() {
-        initialPagingReputations();
+    public void init(User user) {
+        if (user != null) {
+            this.user.setValue(user);
+            initialPagingReputations(user);
+        }
     }
 
-    private void initialPagingReputations() {
+    private void initialPagingReputations(User user) {
         if (executor == null) {
             executor = Executors.newFixedThreadPool(Constants.DEFAULT_THREAD_POOL);
         }
@@ -54,11 +60,10 @@ public class ReputationViewModel extends BaseViewModel {
                 .build();
         }
 
-        if (userDataSourceFactory == null) {
-            userDataSourceFactory = new UserDataSourceFactory(
-                false,
+        if (reputationDataSourceFactory == null) {
+            reputationDataSourceFactory = new ReputationDataSourceFactory(
+                user.getUserId(),
                 userRepository.getUserApi(),
-                userRepository.getUserDao(),
                 executor,
                 getCompositeDisposable()
             );
@@ -66,29 +71,33 @@ public class ReputationViewModel extends BaseViewModel {
 
         if (networkState == null) {
             networkState = Transformations.switchMap(
-                userDataSourceFactory.getSourceLiveData(),
-                UserPageKeyedDataSource::getNetworkState);
+                reputationDataSourceFactory.getSourceLiveData(),
+                ReputationDataSource::getNetworkState);
         }
 
-        pagedListUser =
-            (new LivePagedListBuilder<>(userDataSourceFactory, pagedListConfig))
+        pagedListReputationHistory =
+            (new LivePagedListBuilder<>(reputationDataSourceFactory, pagedListConfig))
                 .setFetchExecutor(executor)
                 .build();
     }
 
     public void refresh() {
-        userDataSourceFactory.refresh();
+        reputationDataSourceFactory.refresh();
     }
 
     public void retryFetchReputations() {
-        userDataSourceFactory.doRetry();
+        reputationDataSourceFactory.doRetry();
     }
 
     public LiveData<NetworkState> getNetworkState() {
         return networkState;
     }
 
-    public LiveData<PagedList<User>> getPagedListUser() {
-        return pagedListUser;
+    public LiveData<PagedList<ReputationHistory>> getPagedListReputationHistory() {
+        return pagedListReputationHistory;
+    }
+
+    public MutableLiveData<User> getUser() {
+        return user;
     }
 }

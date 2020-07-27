@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.User;
 
 import java.util.List;
 

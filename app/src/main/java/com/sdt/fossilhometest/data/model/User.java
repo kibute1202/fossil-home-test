@@ -1,4 +1,4 @@
-package com.sdt.fossilhometest.data.model.db;
+package com.sdt.fossilhometest.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

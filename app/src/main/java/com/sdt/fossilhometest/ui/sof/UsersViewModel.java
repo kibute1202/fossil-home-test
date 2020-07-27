@@ -3,11 +3,10 @@ package com.sdt.fossilhometest.ui.sof;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.source.user.UserDataSourceFactory;
 import com.sdt.fossilhometest.data.source.user.UserPageKeyedDataSource;

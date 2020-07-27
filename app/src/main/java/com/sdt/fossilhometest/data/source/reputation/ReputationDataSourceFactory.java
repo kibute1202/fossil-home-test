@@ -4,11 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
-import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.db.ReputationHistory;
-import com.sdt.fossilhometest.data.model.db.User;
+import com.sdt.fossilhometest.data.model.ReputationHistory;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
-import com.sdt.fossilhometest.data.source.user.UserPageKeyedDataSource;
 
 import java.util.concurrent.Executor;
 
