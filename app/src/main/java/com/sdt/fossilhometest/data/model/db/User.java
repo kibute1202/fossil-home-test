@@ -1,6 +1,7 @@
 package com.sdt.fossilhometest.data.model.db;
 
-import androidx.room.Embedded;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -12,6 +13,18 @@ import org.jetbrains.annotations.NotNull;
 
 @Entity(tableName = "users")
 public class User {
+
+    public static final DiffUtil.ItemCallback<User> ITEM_CALLBACK = new DiffUtil.ItemCallback<User>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
+            return oldItem.getUserId() == newItem.getUserId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull User oldItem, @NonNull User newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 
     @PrimaryKey
     @SerializedName("user_id")

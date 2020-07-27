@@ -4,6 +4,7 @@ public final class NetworkState {
 
     public static NetworkState LOADED = new NetworkState(Status.SUCCESS);
     public static NetworkState LOADING = new NetworkState(Status.RUNNING);
+    public static NetworkState LOCAL = new NetworkState(Status.LOCAL);
 
     public static NetworkState error(Throwable cause) {
         return new NetworkState(Status.FAILED, cause);
@@ -40,7 +41,8 @@ public final class NetworkState {
     public enum Status {
         RUNNING,
         SUCCESS,
-        FAILED
+        FAILED,
+        LOCAL
     }
 }
 

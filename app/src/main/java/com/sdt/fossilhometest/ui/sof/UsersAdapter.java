@@ -1,10 +1,10 @@
 package com.sdt.fossilhometest.ui.sof;
 
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.DiffUtil;
 
@@ -16,8 +16,7 @@ import com.sdt.fossilhometest.databinding.ItemLoadingUserBinding;
 import com.sdt.fossilhometest.databinding.ItemUserBinding;
 import com.sdt.fossilhometest.ui.base.BaseAdapter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
 
@@ -29,20 +28,10 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
 
     private OnItemListener onItemListener;
 
-    private Set<Integer> bookmarks = new HashSet<>();
+    private ArrayMap<Integer, Boolean> bookmarks = new ArrayMap<>();
 
     public UsersAdapter() {
-        super(new DiffUtil.ItemCallback<User>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
-                return oldItem.getUserId() == newItem.getUserId();
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull User oldItem, @NonNull User newItem) {
-                return oldItem.equals(newItem);
-            }
-        });
+        super(User.ITEM_CALLBACK);
     }
 
     @Override
@@ -126,16 +115,19 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     }
 
     private void bindUserView(ItemUserBinding viewDataBinding, User item, int position) {
-        boolean bookmarked = bookmarks.contains(item.getUserId());
-        viewDataBinding.ivBookmark.setImageResource(
-            bookmarked ? R.drawable.ic_star : R.drawable.ic_stroke_star);
+        setupBookmark(viewDataBinding, item);
 
         viewDataBinding.ivBookmark.setOnClickListener(v -> {
             if (onItemListener != null) {
-                if (bookmarked) {
-                    onItemListener.unBookmark(item);
+                Boolean bookmarked = bookmarks.get(item.getUserId());
+                if (bookmarked != null && bookmarked) {
+                    onItemListener.unBookmark(item, position);
+                    bookmarks.put(item.getUserId(), false);
+                    updateBookmarkIcon(viewDataBinding, false);
                 } else {
-                    onItemListener.bookmark(item);
+                    onItemListener.bookmark(item, position);
+                    bookmarks.put(item.getUserId(), true);
+                    updateBookmarkIcon(viewDataBinding, true);
                 }
             }
         });
@@ -145,6 +137,20 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
                 onItemListener.onClick(item);
             }
         });
+    }
+
+    private void setupBookmark(ItemUserBinding viewDataBinding, User item) {
+        Boolean bookmarked = bookmarks.get(item.getUserId());
+        if (bookmarked == null) {
+            bookmarked = Boolean.FALSE;
+            bookmarks.put(item.getUserId(), false);
+        }
+        updateBookmarkIcon(viewDataBinding, bookmarked);
+    }
+
+    private void updateBookmarkIcon(ItemUserBinding binding, boolean bookmarked) {
+        binding.ivBookmark.setImageResource(
+            bookmarked ? R.drawable.ic_star : R.drawable.ic_stroke_star);
     }
 
     private void bindLoadMoreUserView(ItemLoadingUserBinding viewDataBinding) {
@@ -164,7 +170,9 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     }
 
     private boolean hasExtraRow() {
-        return networkState != null && networkState != NetworkState.LOADED;
+        return networkState != null
+            && networkState != NetworkState.LOADED
+            && networkState != NetworkState.LOCAL;
     }
 
     public void setNetworkState(NetworkState newNetworkState) {
@@ -187,14 +195,22 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         this.onItemListener = onItemListener;
     }
 
+    public void updateBookmarkedUsers(List<Integer> userIds) {
+        for (Integer userId : userIds) {
+            if (!bookmarks.containsKey(userId)) {
+                bookmarks.put(userId, true);
+            }
+        }
+    }
+
     public interface OnItemListener {
         void onRetry();
 
         void onClick(User user);
 
-        void bookmark(User user);
+        void bookmark(User user, int position);
 
-        void unBookmark(User user);
+        void unBookmark(User user, int position);
     }
 
 }

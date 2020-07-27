@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
 
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.api.UserResponse;
 import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
@@ -13,9 +12,6 @@ import com.sdt.fossilhometest.utils.Constants;
 import com.sdt.fossilhometest.utils.ListUtils;
 import com.sdt.fossilhometest.utils.ThreadUtils;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -27,14 +23,14 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
 
     private static final String TAG = "UserPageKeyedDataSource";
 
+    private boolean inLocal;
+
     private final UserApi userApi;
+    private final UserDao userDao;
 
     private MutableLiveData<NetworkState> networkState;
     private CompositeDisposable compositeDisposable;
 
-    /**
-     * Handle retry fetch data
-     */
     private Executor retryExecutor;
     private boolean doRetryInitial = false;
 
@@ -44,10 +40,14 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
     private LoadParams<Integer> retryParams;
     private LoadCallback<Integer, User> retryCallback;
 
-    public UserPageKeyedDataSource(UserApi userApi,
+    public UserPageKeyedDataSource(boolean inLocal,
+                                   UserDao userDao,
+                                   UserApi userApi,
                                    Executor retryExecutor,
                                    CompositeDisposable compositeDisposable) {
+        this.inLocal = inLocal;
         this.userApi = userApi;
+        this.userDao = userDao;
         this.retryExecutor = retryExecutor;
         this.compositeDisposable = compositeDisposable;
 
@@ -60,19 +60,37 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
 
         networkState.postValue(NetworkState.LOADING);
 
-        ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
+        Disposable disposable;
 
-        Disposable disposable = userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
-            .subscribe(userResponse -> {
-                List<User> result = ListUtils.safe(userResponse.getUsers());
-                callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
-                networkState.postValue(NetworkState.LOADED);
-            }, throwable -> {
-                retryInitialParams = params;
-                retryInitialCallback = callback;
-                doRetryInitial = true;
-                handleError(throwable);
-            });
+        if (inLocal) {
+            networkState.postValue(NetworkState.LOCAL);
+
+            disposable = userDao.getBookmarkedUsers(Constants.PAGE_SIZE, 0)
+                .subscribe(users -> {
+                    callback.onResult(users, null, Constants.PAGE_SIZE - 1);
+                }, throwable -> {
+                    retryInitialParams = params;
+                    retryInitialCallback = callback;
+                    doRetryInitial = true;
+//                    handleError(throwable);
+                });
+        } else {
+            networkState.postValue(NetworkState.LOADING);
+
+            ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
+
+            disposable = userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
+                .subscribe(userResponse -> {
+                    List<User> result = ListUtils.safe(userResponse.getUsers());
+                    callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
+                    networkState.postValue(NetworkState.LOADED);
+                }, throwable -> {
+                    retryInitialParams = params;
+                    retryInitialCallback = callback;
+                    doRetryInitial = true;
+                    handleError(throwable);
+                });
+        }
 
         compositeDisposable.add(disposable);
     }
@@ -87,21 +105,38 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
                           @NonNull LoadCallback<Integer, User> callback) {
         Timber.i("LoadUsers[page = %d, pageSize = %d]", params.key, params.requestedLoadSize);
 
-        networkState.postValue(NetworkState.LOADING);
+        Disposable disposable;
 
-        ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
+        if (inLocal) {
+            networkState.postValue(NetworkState.LOCAL);
 
-        Disposable disposable = userApi.getUsers(params.key, Constants.PAGE_SIZE)
-            .subscribe(userResponse -> {
-                Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
-                callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
-                networkState.postValue(NetworkState.LOADED);
-            }, throwable -> {
-                doRetryInitial = false;
-                retryParams = params;
-                retryCallback = callback;
-                handleError(throwable);
-            });
+            disposable = userDao.getBookmarkedUsers(Constants.PAGE_SIZE, params.key)
+                .subscribe(users -> {
+                    Integer nextKey = users.size() == Constants.PAGE_SIZE ? params.key + Constants.PAGE_SIZE : null;
+                    callback.onResult(users, nextKey);
+                }, throwable -> {
+                    doRetryInitial = false;
+                    retryParams = params;
+                    retryCallback = callback;
+//                    handleError(throwable);
+                });
+        } else {
+            networkState.postValue(NetworkState.LOADING);
+
+            ThreadUtils.delay(Constants.LAZY_LOADING_TIME);
+
+            disposable = userApi.getUsers(params.key, Constants.PAGE_SIZE)
+                .subscribe(userResponse -> {
+                    Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
+                    callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
+                    networkState.postValue(NetworkState.LOADED);
+                }, throwable -> {
+                    doRetryInitial = false;
+                    retryParams = params;
+                    retryCallback = callback;
+                    handleError(throwable);
+                });
+        }
 
         compositeDisposable.add(disposable);
     }

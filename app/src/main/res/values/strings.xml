@@ -16,5 +16,10 @@
   <string name="retry">Retry</string>
   <string name="all">All</string>
   <string name="bookmark">Bookmark</string>
+  <string name="saved">Saved</string>
+  <string name="saved_to_bookmark">Saved to Bookmark</string>
+  <string name="cannot_remove_from_bookmark">Cannot remove user from Bookmark</string>
+  <string name="remove_from_bookmark">Remove from Bookmarks</string>
+  <string name="cannot_saved_to_bookmark">Cannot saved user to Bookmark</string>
 
 </resources>

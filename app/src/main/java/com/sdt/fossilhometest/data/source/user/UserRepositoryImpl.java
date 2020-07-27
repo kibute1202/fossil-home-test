@@ -1,27 +1,18 @@
 package com.sdt.fossilhometest.data.source.user;
 
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
+import androidx.paging.DataSource;
 
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
-import com.sdt.fossilhometest.data.model.api.UserResponse;
 import com.sdt.fossilhometest.data.model.db.User;
-import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
-import com.sdt.fossilhometest.utils.Constants;
 import com.sdt.fossilhometest.utils.rx.SchedulerProvider;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import io.reactivex.disposables.CompositeDisposable;
 
 
 public class UserRepositoryImpl implements UserRepository {
@@ -41,8 +32,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Single<List<User>> getUsersFromRemoteOrLocal(int page, int pageSize) {
-        return null;
+    public Single<List<Integer>> getBookmarkedUserIds() {
+        return local.getBookmarkedUserIds();
+    }
+
+    @Override
+    public DataSource.Factory<Integer, User> getBookmarkedUsers() {
+        return local.getBookmarkedUsers();
     }
 
     @Override
@@ -53,6 +49,16 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public UserDao getUserDao() {
         return local.getUserDao();
+    }
+
+    @Override
+    public void saveToBookmark(User user) {
+        local.insertUser(user);
+    }
+
+    @Override
+    public void removeFromBookmark(User user) {
+        local.deleteUser(user);
     }
 
 }

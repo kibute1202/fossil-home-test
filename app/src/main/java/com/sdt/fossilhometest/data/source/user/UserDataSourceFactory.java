@@ -4,15 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
-import com.sdt.fossilhometest.data.local.db.AppDatabase;
 import com.sdt.fossilhometest.data.local.db.dao.UserDao;
 import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.api.UserApi;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -21,14 +17,18 @@ public class UserDataSourceFactory extends DataSource.Factory<Integer, User> {
     private MutableLiveData<UserPageKeyedDataSource> sourceLiveData;
     private UserPageKeyedDataSource dataSource;
 
+    private boolean inLocal;
     private final UserApi userApi;
     private final UserDao userDao;
     private final Executor executor;
     private final CompositeDisposable compositeDisposable;
 
-    public UserDataSourceFactory(UserApi userApi, UserDao userDao,
+    public UserDataSourceFactory(boolean inLocal,
+                                 UserApi userApi,
+                                 UserDao userDao,
                                  Executor executor,
                                  CompositeDisposable compositeDisposable) {
+        this.inLocal = inLocal;
         this.userApi = userApi;
         this.userDao = userDao;
         this.executor = executor;
@@ -39,9 +39,17 @@ public class UserDataSourceFactory extends DataSource.Factory<Integer, User> {
     @NonNull
     @Override
     public DataSource<Integer, User> create() {
-        dataSource = new UserPageKeyedDataSource(userApi, executor, compositeDisposable);
+        dataSource = new UserPageKeyedDataSource(
+            inLocal, userDao, userApi, executor, compositeDisposable);
         sourceLiveData.postValue(dataSource);
         return dataSource;
+    }
+
+    public void switchSource(boolean isLocal) {
+        if (this.inLocal != isLocal) {
+            this.inLocal = isLocal;
+            refresh();
+        }
     }
 
     public void refresh() {
@@ -54,6 +62,10 @@ public class UserDataSourceFactory extends DataSource.Factory<Integer, User> {
         if (dataSource != null) {
             dataSource.doRetry();
         }
+    }
+
+    public boolean isInLocal() {
+        return inLocal;
     }
 
     public MutableLiveData<UserPageKeyedDataSource> getSourceLiveData() {

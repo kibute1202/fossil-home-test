@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
@@ -163,6 +165,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         if (addToBackStack) transaction.addToBackStack(null);
         transaction.setTransition(transition);
         transaction.commit();
+    }
+
+    protected void setTitleActionBar(@StringRes int res) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(res);
+        }
     }
 
 }

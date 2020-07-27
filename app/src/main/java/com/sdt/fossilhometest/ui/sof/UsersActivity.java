@@ -1,6 +1,12 @@
 package com.sdt.fossilhometest.ui.sof;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.data.model.db.User;
@@ -11,6 +17,7 @@ import com.sdt.fossilhometest.ui.base.BaseActivity;
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
     private UsersAdapter usersAdapter;
+    private UserLocalAdapter userLocalAdapter;
 
     @Override
     protected int layoutResId() {
@@ -25,9 +32,7 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     }
 
     private void setupUI() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.sof_users);
-        }
+        setTitleActionBar(R.string.sof_users);
 
         usersAdapter = new UsersAdapter();
         usersAdapter.setOnItemListener(onItemListener);
@@ -37,6 +42,8 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     }
 
     private void observeData() {
+        viewModel.getBookmarkedUserIds().observe(this, usersAdapter::updateBookmarkedUsers);
+
         viewModel.getPagedListUser().observe(this, usersAdapter::submitList);
 
         viewModel.getNetworkState().observe(this, this::handleNetworkState);
@@ -46,7 +53,8 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         usersAdapter.setNetworkState(networkState);
         if (networkState == NetworkState.LOADED) {
             viewDataBinding.swipeRefreshLayout.setRefreshing(false);
-        } else if (networkState.getStatus() == NetworkState.Status.FAILED) {
+        } else if (networkState.getStatus() == NetworkState.Status.FAILED
+            || networkState == NetworkState.LOCAL) {
             viewDataBinding.swipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -62,14 +70,81 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         }
 
         @Override
-        public void bookmark(User user) {
-            viewModel.bookmark(user);
+        public void bookmark(User user, int position) {
+            handleSaveToBookmarks(user, position);
         }
 
         @Override
-        public void unBookmark(User user) {
-            viewModel.unBookmark(user);
+        public void unBookmark(User user, int position) {
+            handleRemoveFromBookmarks(user, position);
         }
     };
 
+    private void handleRemoveFromBookmarks(User user, int position) {
+        viewModel.removeFromBookmarks(user, new UsersViewModel.BaseActionListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UsersActivity.this,
+                    R.string.remove_from_bookmark, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailed() {
+                Toast.makeText(UsersActivity.this,
+                    R.string.cannot_remove_from_bookmark, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleSaveToBookmarks(User user, int position) {
+        viewModel.saveToBookmarks(user, new UsersViewModel.BaseActionListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UsersActivity.this,
+                    R.string.saved_to_bookmark, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailed() {
+                Toast.makeText(UsersActivity.this,
+                    R.string.cannot_saved_to_bookmark, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.filter_users_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.allUsers:
+                setTitleActionBar(R.string.sof_users);
+                filterAllUsers();
+                break;
+            case R.id.bookmark:
+                setTitleActionBar(R.string.bookmark);
+                filterBookmarkedUsers();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void filterBookmarkedUsers() {
+        if (viewModel.getFilterUser() != UsersViewModel.Filter.BOOKMARK) {
+            usersAdapter.submitList(null);
+            viewModel.filterBookmarkedUsers();
+        }
+    }
+
+    private void filterAllUsers() {
+        if (viewModel.getFilterUser() != UsersViewModel.Filter.ALL) {
+            usersAdapter.submitList(null);
+            viewModel.filterAllUsers();
+        }
+    }
 }
