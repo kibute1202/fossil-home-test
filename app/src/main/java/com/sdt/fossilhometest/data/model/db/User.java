@@ -160,7 +160,10 @@ public class User implements Parcelable {
 
     @Override
     public int hashCode() {
-        return 31 + Integer.valueOf(userId).hashCode();
+        int hashCode = 1;
+        hashCode = 31 * hashCode + Integer.valueOf(userId).hashCode();
+        hashCode = 31 * hashCode + Integer.valueOf(reputation).hashCode();
+        return hashCode;
     }
 
     @NotNull
