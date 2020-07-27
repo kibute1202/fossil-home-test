@@ -1,10 +1,25 @@
 package com.sdt.fossilhometest.data.model.db;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
 public class ReputationHistory {
+
+    public static final DiffUtil.ItemCallback<ReputationHistory> ITEM_CALLBACK = new DiffUtil.ItemCallback<ReputationHistory>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull ReputationHistory oldItem, @NonNull ReputationHistory newItem) {
+            return oldItem.getUserId() == newItem.getUserId() && oldItem.getPostId() == newItem.getPostId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ReputationHistory oldItem, @NonNull ReputationHistory newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 
     @Expose
     @SerializedName("user_id")

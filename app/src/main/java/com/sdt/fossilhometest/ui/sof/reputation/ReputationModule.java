@@ -12,10 +12,10 @@ import dagger.multibindings.IntoMap;
 @Module(includes = {
     ViewModelBuilder.class
 })
-public abstract class ReputationHistoryModule {
+public abstract class ReputationModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ReputationHistoryViewModel.class)
-    abstract ViewModel bindViewModel(ReputationHistoryViewModel viewModel);
+    @ViewModelKey(ReputationViewModel.class)
+    abstract ViewModel bindViewModel(ReputationViewModel viewModel);
 }

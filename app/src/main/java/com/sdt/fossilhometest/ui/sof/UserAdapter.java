@@ -6,31 +6,24 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.collection.ArrayMap;
 import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.DiffUtil;
 
 import com.sdt.fossilhometest.R;
 import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
-import com.sdt.fossilhometest.databinding.ItemLoadUserErrorBinding;
+import com.sdt.fossilhometest.databinding.ItemLoadErrorBinding;
 import com.sdt.fossilhometest.databinding.ItemLoadingUserBinding;
 import com.sdt.fossilhometest.databinding.ItemUserBinding;
-import com.sdt.fossilhometest.ui.base.BaseAdapter;
+import com.sdt.fossilhometest.ui.base.BasePagedListAdapter;
 
 import java.util.List;
 
-public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
-
-    private static final int TYPE_LOADING = 1;
-    private static final int TYPE_ITEM = TYPE_LOADING + 1;
-    private static final int TYPE_ERROR = TYPE_ITEM + 1;
-
-    private NetworkState networkState;
+public class UserAdapter extends BasePagedListAdapter<User, ViewDataBinding> {
 
     private OnItemListener onItemListener;
 
     private ArrayMap<Integer, Boolean> bookmarks = new ArrayMap<>();
 
-    public UsersAdapter() {
+    public UserAdapter() {
         super(User.ITEM_CALLBACK);
     }
 
@@ -44,21 +37,9 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         if (viewType == TYPE_LOADING) {
             return R.layout.item_loading_user;
         } else if (viewType == TYPE_ERROR) {
-            return R.layout.item_load_user_error;
+            return R.layout.item_load_error;
         }
         return R.layout.item_user;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (hasExtraRow() && position == getItemCount() - 1) {
-            if (networkState.getStatus() == NetworkState.Status.FAILED) {
-                return TYPE_ERROR;
-            }
-            return TYPE_LOADING;
-        } else {
-            return TYPE_ITEM;
-        }
     }
 
     @NonNull
@@ -73,7 +54,7 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
             );
         } else if (viewType == TYPE_ERROR) {
             return new BaseViewHolder<>(
-                ItemLoadUserErrorBinding.inflate(
+                ItemLoadErrorBinding.inflate(
                     LayoutInflater.from(parent.getContext()),
                     parent, false
                 )
@@ -90,7 +71,7 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<ViewDataBinding> holder, int position) {
         if (holder.getViewDataBinding() instanceof ItemLoadingUserBinding
-            || holder.getViewDataBinding() instanceof ItemLoadUserErrorBinding) {
+            || holder.getViewDataBinding() instanceof ItemLoadErrorBinding) {
             bindView(holder.getViewDataBinding(), null, -1);
         } else {
             super.onBindViewHolder(holder, position);
@@ -104,14 +85,9 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         } else {
             if (viewDataBinding instanceof ItemLoadingUserBinding)
                 bindLoadMoreUserView(((ItemLoadingUserBinding) viewDataBinding));
-            else if (viewDataBinding instanceof ItemLoadUserErrorBinding)
-                bindLoadUserErrorView(((ItemLoadUserErrorBinding) viewDataBinding));
+            else if (viewDataBinding instanceof ItemLoadErrorBinding)
+                bindLoadUserErrorView(((ItemLoadErrorBinding) viewDataBinding));
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return super.getItemCount() + (hasExtraRow() ? 1 : 0);
     }
 
     private void bindUserView(ItemUserBinding viewDataBinding, User item, int position) {
@@ -161,34 +137,12 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         }
     }
 
-    private void bindLoadUserErrorView(ItemLoadUserErrorBinding viewDataBinding) {
+    private void bindLoadUserErrorView(ItemLoadErrorBinding viewDataBinding) {
         viewDataBinding.retry.setOnClickListener(v -> {
             if (onItemListener != null) {
                 onItemListener.onRetry();
             }
         });
-    }
-
-    private boolean hasExtraRow() {
-        return networkState != null
-            && networkState != NetworkState.LOADED
-            && networkState != NetworkState.LOCAL;
-    }
-
-    public void setNetworkState(NetworkState newNetworkState) {
-        NetworkState previousState = this.networkState;
-        boolean previousExtraRow = hasExtraRow();
-        this.networkState = newNetworkState;
-        boolean newExtraRow = hasExtraRow();
-        if (previousExtraRow != newExtraRow) {
-            if (previousExtraRow) {
-                notifyItemRemoved(super.getItemCount());
-            } else {
-                notifyItemInserted(super.getItemCount());
-            }
-        } else if (newExtraRow && previousState != newNetworkState) {
-            notifyItemChanged(getItemCount() - 1);
-        }
     }
 
     public void setOnItemListener(OnItemListener onItemListener) {

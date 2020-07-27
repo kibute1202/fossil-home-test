@@ -13,11 +13,11 @@ import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ActivityUsersBinding;
 import com.sdt.fossilhometest.ui.base.BaseActivity;
-import com.sdt.fossilhometest.ui.sof.reputation.ReputationHistoryActivity;
+import com.sdt.fossilhometest.ui.sof.reputation.ReputationActivity;
 
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
-    private UsersAdapter usersAdapter;
+    private UserAdapter userAdapter;
 
     @Override
     protected int layoutResId() {
@@ -34,23 +34,23 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     private void setupUI() {
         setTitleActionBar(R.string.sof_users);
 
-        usersAdapter = new UsersAdapter();
-        usersAdapter.setOnItemListener(onItemListener);
-        viewDataBinding.rvUsers.setAdapter(usersAdapter);
+        userAdapter = new UserAdapter();
+        userAdapter.setOnItemListener(onItemListener);
+        viewDataBinding.rvUsers.setAdapter(userAdapter);
 
         viewDataBinding.swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
     }
 
     private void observeData() {
-        viewModel.getBookmarkedUserIds().observe(this, usersAdapter::updateBookmarkedUsers);
+        viewModel.getBookmarkedUserIds().observe(this, userAdapter::updateBookmarkedUsers);
 
-        viewModel.getPagedListUser().observe(this, usersAdapter::submitList);
+        viewModel.getPagedListUser().observe(this, userAdapter::submitList);
 
         viewModel.getNetworkState().observe(this, this::handleNetworkState);
     }
 
     private void handleNetworkState(NetworkState networkState) {
-        usersAdapter.setNetworkState(networkState);
+        userAdapter.setNetworkState(networkState);
         if (networkState == NetworkState.LOADED) {
             viewDataBinding.swipeRefreshLayout.setRefreshing(false);
         } else if (networkState.getStatus() == NetworkState.Status.FAILED
@@ -59,7 +59,7 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         }
     }
 
-    private UsersAdapter.OnItemListener onItemListener = new UsersAdapter.OnItemListener() {
+    private UserAdapter.OnItemListener onItemListener = new UserAdapter.OnItemListener() {
         @Override
         public void onRetry() {
             viewModel.retryFetchUsers();
@@ -67,7 +67,7 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
 
         @Override
         public void onClick(User user) {
-            startActivity(ReputationHistoryActivity.newIntent(UsersActivity.this, user));
+            startActivity(ReputationActivity.newIntent(UsersActivity.this, user));
         }
 
         @Override
@@ -139,14 +139,14 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
 
     private void filterBookmarkedUsers() {
         if (viewModel.getFilterUser() != UsersViewModel.Filter.BOOKMARK) {
-            usersAdapter.submitList(null);
+            userAdapter.submitList(null);
             viewModel.filterBookmarkedUsers();
         }
     }
 
     private void filterAllUsers() {
         if (viewModel.getFilterUser() != UsersViewModel.Filter.ALL) {
-            usersAdapter.submitList(null);
+            userAdapter.submitList(null);
             viewModel.filterAllUsers();
         }
     }

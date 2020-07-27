@@ -6,13 +6,13 @@ import com.sdt.fossilhometest.utils.rx.SchedulerProvider;
 
 import javax.inject.Inject;
 
-public class ReputationHistoryViewModel extends BaseViewModel {
+public class ReputationViewModel extends BaseViewModel {
 
     private final UserRepository userRepository;
 
     @Inject
-    public ReputationHistoryViewModel(SchedulerProvider schedulerProvider,
-                                      UserRepository userRepository) {
+    public ReputationViewModel(SchedulerProvider schedulerProvider,
+                               UserRepository userRepository) {
         super(schedulerProvider);
         this.userRepository = userRepository;
     }

@@ -12,4 +12,7 @@ public interface UserApi {
     @GET("users?site=stackoverflow")
     Single<Result<User>> getUsers(@Query("page") int page, @Query("pagesize") int pageSize);
 
+    @GET("users/{userId}/reputation-history?site=stackoverflow")
+    Single<Result<User>> getReputationHistories(@Query("page") int page, @Query("pagesize") int pageSize);
+
 }

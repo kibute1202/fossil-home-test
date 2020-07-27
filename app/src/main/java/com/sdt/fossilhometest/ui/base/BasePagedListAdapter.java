@@ -16,13 +16,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sdt.fossilhometest.BR;
 import com.sdt.fossilhometest.R;
+import com.sdt.fossilhometest.data.remote.NetworkState;
 
 import java.util.List;
 
-public abstract class BaseAdapter<T, V extends ViewDataBinding> extends PagedListAdapter<T, BaseAdapter.BaseViewHolder<V>> {
+public abstract class BasePagedListAdapter<T, V extends ViewDataBinding> extends PagedListAdapter<T, BasePagedListAdapter.BaseViewHolder<V>> {
 
-    protected BaseAdapter(@NonNull DiffUtil.ItemCallback<T> diffCallback) {
+    protected static final int TYPE_LOADING = 1;
+    protected static final int TYPE_ITEM = TYPE_LOADING + 1;
+    protected static final int TYPE_ERROR = TYPE_ITEM + 1;
+
+    protected NetworkState networkState;
+
+    protected BasePagedListAdapter(@NonNull DiffUtil.ItemCallback<T> diffCallback) {
         super(diffCallback);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (hasExtraRow() && position == getItemCount() - 1) {
+            if (networkState.getStatus() == NetworkState.Status.FAILED) {
+                return TYPE_ERROR;
+            }
+            return TYPE_LOADING;
+        } else {
+            return TYPE_ITEM;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() + (hasExtraRow() ? 1 : 0);
     }
 
     @NonNull
@@ -85,6 +109,28 @@ public abstract class BaseAdapter<T, V extends ViewDataBinding> extends PagedLis
                     R.anim.fade_in
                 )
             );
+        }
+    }
+
+    protected boolean hasExtraRow() {
+        return networkState != null
+            && networkState != NetworkState.LOADED
+            && networkState != NetworkState.LOCAL;
+    }
+
+    public void setNetworkState(NetworkState newNetworkState) {
+        NetworkState previousState = this.networkState;
+        boolean previousExtraRow = hasExtraRow();
+        this.networkState = newNetworkState;
+        boolean newExtraRow = hasExtraRow();
+        if (previousExtraRow != newExtraRow) {
+            if (previousExtraRow) {
+                notifyItemRemoved(super.getItemCount());
+            } else {
+                notifyItemInserted(super.getItemCount());
+            }
+        } else if (newExtraRow && previousState != newNetworkState) {
+            notifyItemChanged(getItemCount() - 1);
         }
     }
 
