@@ -1,8 +1,12 @@
 package com.sdt.fossilhometest.data.model.db;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -12,7 +16,7 @@ import com.sdt.fossilhometest.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 @Entity(tableName = "users")
-public class User {
+public class User implements Parcelable {
 
     public static final DiffUtil.ItemCallback<User> ITEM_CALLBACK = new DiffUtil.ItemCallback<User>() {
         @Override
@@ -25,6 +29,8 @@ public class User {
             return oldItem.equals(newItem);
         }
     };
+
+    public static final String TAG = User.class.getSimpleName();
 
     @PrimaryKey
     @SerializedName("user_id")
@@ -53,6 +59,43 @@ public class User {
 
     public User() {
     }
+
+    @Ignore
+    protected User(Parcel in) {
+        userId = in.readInt();
+        lastAccessDate = in.readInt();
+        reputation = in.readInt();
+        location = in.readString();
+        profileImage = in.readString();
+        displayName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(userId);
+        dest.writeInt(lastAccessDate);
+        dest.writeInt(reputation);
+        dest.writeString(location);
+        dest.writeString(profileImage);
+        dest.writeString(displayName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public int getLastAccessDate() {
         return lastAccessDate;

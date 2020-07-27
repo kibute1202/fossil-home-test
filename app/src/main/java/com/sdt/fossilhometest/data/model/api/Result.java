@@ -1,36 +1,36 @@
 package com.sdt.fossilhometest.data.model.api;
 
-public class Result {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    private int errorId;
-    private String errorMessage;
-    private String errorName;
+import java.util.List;
+
+public class Result<T> {
+
+    @Expose
+    @SerializedName("items")
+    private List<T> items;
+
+    @Expose
+    @SerializedName("has_more")
+    private boolean hasMore;
 
     public Result() {
     }
 
-    public int getErrorId() {
-        return errorId;
+    public List<T> getItems() {
+        return items;
     }
 
-    public void setErrorId(int errorId) {
-        this.errorId = errorId;
+    public void setItems(List<T> items) {
+        this.items = items;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public boolean isHasMore() {
+        return hasMore;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setHasMore(boolean hasMore) {
+        this.hasMore = hasMore;
     }
-
-    public String getErrorName() {
-        return errorName;
-    }
-
-    public void setErrorName(String errorName) {
-        this.errorName = errorName;
-    }
-
 }

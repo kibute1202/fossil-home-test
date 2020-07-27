@@ -13,6 +13,7 @@ import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ActivityUsersBinding;
 import com.sdt.fossilhometest.ui.base.BaseActivity;
+import com.sdt.fossilhometest.ui.sof.reputation.ReputationHistoryActivity;
 
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
@@ -66,6 +67,7 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
 
         @Override
         public void onClick(User user) {
+            startActivity(ReputationHistoryActivity.newIntent(UsersActivity.this, user));
         }
 
         @Override

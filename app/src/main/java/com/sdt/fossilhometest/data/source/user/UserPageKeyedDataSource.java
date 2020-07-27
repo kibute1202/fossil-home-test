@@ -81,7 +81,7 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
 
             disposable = userApi.getUsers(Constants.INITIAL_PAGE, Constants.PAGE_SIZE)
                 .subscribe(userResponse -> {
-                    List<User> result = ListUtils.safe(userResponse.getUsers());
+                    List<User> result = ListUtils.safe(userResponse.getItems());
                     callback.onResult(result, null, Constants.INITIAL_PAGE + 1);
                     networkState.postValue(NetworkState.LOADED);
                 }, throwable -> {
@@ -128,7 +128,7 @@ public class UserPageKeyedDataSource extends PageKeyedDataSource<Integer, User> 
             disposable = userApi.getUsers(params.key, Constants.PAGE_SIZE)
                 .subscribe(userResponse -> {
                     Integer nextKey = userResponse.isHasMore() ? params.key + 1 : null;
-                    callback.onResult(ListUtils.safe(userResponse.getUsers()), nextKey);
+                    callback.onResult(ListUtils.safe(userResponse.getItems()), nextKey);
                     networkState.postValue(NetworkState.LOADED);
                 }, throwable -> {
                     doRetryInitial = false;
