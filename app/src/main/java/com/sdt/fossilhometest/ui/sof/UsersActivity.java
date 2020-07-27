@@ -59,7 +59,16 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
 
         @Override
         public void onClick(User user) {
+        }
 
+        @Override
+        public void bookmark(User user) {
+            viewModel.bookmark(user);
+        }
+
+        @Override
+        public void unBookmark(User user) {
+            viewModel.unBookmark(user);
         }
     };
 

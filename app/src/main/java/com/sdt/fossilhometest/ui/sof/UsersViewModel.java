@@ -67,6 +67,14 @@ public class UsersViewModel extends BaseViewModel {
                 .build();
     }
 
+    public void bookmark(User user) {
+
+    }
+
+    public void unBookmark(User user) {
+
+    }
+
     public LiveData<NetworkState> getNetworkState() {
         return networkState;
     }

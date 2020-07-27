@@ -1,5 +1,6 @@
 package com.sdt.fossilhometest.ui.sof;
 
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -15,6 +16,9 @@ import com.sdt.fossilhometest.databinding.ItemLoadingUserBinding;
 import com.sdt.fossilhometest.databinding.ItemUserBinding;
 import com.sdt.fossilhometest.ui.base.BaseAdapter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
 
     private static final int TYPE_LOADING = 1;
@@ -24,6 +28,8 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     private NetworkState networkState;
 
     private OnItemListener onItemListener;
+
+    private Set<Integer> bookmarks = new HashSet<>();
 
     public UsersAdapter() {
         super(new DiffUtil.ItemCallback<User>() {
@@ -120,6 +126,20 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     }
 
     private void bindUserView(ItemUserBinding viewDataBinding, User item, int position) {
+        boolean bookmarked = bookmarks.contains(item.getUserId());
+        viewDataBinding.ivBookmark.setImageResource(
+            bookmarked ? R.drawable.ic_star : R.drawable.ic_stroke_star);
+
+        viewDataBinding.ivBookmark.setOnClickListener(v -> {
+            if (onItemListener != null) {
+                if (bookmarked) {
+                    onItemListener.unBookmark(item);
+                } else {
+                    onItemListener.bookmark(item);
+                }
+            }
+        });
+
         viewDataBinding.rootView.setOnClickListener(v -> {
             if (onItemListener != null) {
                 onItemListener.onClick(item);
@@ -171,6 +191,10 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         void onRetry();
 
         void onClick(User user);
+
+        void bookmark(User user);
+
+        void unBookmark(User user);
     }
 
 }
