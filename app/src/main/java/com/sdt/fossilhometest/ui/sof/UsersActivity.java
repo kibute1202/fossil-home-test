@@ -17,7 +17,6 @@ import com.sdt.fossilhometest.ui.base.BaseActivity;
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
     private UsersAdapter usersAdapter;
-    private UserLocalAdapter userLocalAdapter;
 
     @Override
     protected int layoutResId() {
@@ -123,10 +122,12 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.allUsers:
+                item.setChecked(true);
                 setTitleActionBar(R.string.sof_users);
                 filterAllUsers();
                 break;
             case R.id.bookmark:
+                item.setChecked(true);
                 setTitleActionBar(R.string.bookmark);
                 filterBookmarkedUsers();
                 break;
