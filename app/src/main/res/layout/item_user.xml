@@ -14,29 +14,42 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/background"
     android:paddingTop="16dp">
+
+    <ImageView
+      android:layout_width="16dp"
+      app:srcCompat="@drawable/ic_star"
+      android:layout_marginEnd="20dp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_height="16dp"
+      android:layout_marginRight="16dp" />
 
     <TextView
       android:id="@+id/tvLastAccessDate"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="16dp"
-      android:text="@{ DateUtils.getBaseDate(item.lastAccessDate) }"
       android:layout_marginRight="16dp"
-      tools:text="12/02/2020"
+      android:visibility="invisible"
+      android:text="@{ DateUtils.getBaseDate(item.lastAccessDate) }"
       android:textColor="@color/colorSecondaryText"
       android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="@+id/tvDisplayName"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/tvDisplayName" />
+      app:layout_constraintTop_toTopOf="@+id/tvDisplayName"
+      tools:text="12/02/2020" />
 
     <ImageView
       android:id="@+id/ivAvatar"
       circleImageUrl="@{ item.profileImage }"
+      height="@{ 100 }"
       placeholder="@{ @drawable/ic_default_user }"
+      width="@{ 100 }"
       android:layout_width="80dp"
       android:layout_height="80dp"
       android:layout_marginStart="16dp"

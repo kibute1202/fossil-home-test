@@ -23,7 +23,7 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
 
     private NetworkState networkState;
 
-    private OnRetryFetchUsersListener onRetryListener;
+    private OnItemListener onItemListener;
 
     public UsersAdapter() {
         super(new DiffUtil.ItemCallback<User>() {
@@ -120,6 +120,11 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
     }
 
     private void bindUserView(ItemUserBinding viewDataBinding, User item, int position) {
+        viewDataBinding.rootView.setOnClickListener(v -> {
+            if (onItemListener != null) {
+                onItemListener.onClick(item);
+            }
+        });
     }
 
     private void bindLoadMoreUserView(ItemLoadingUserBinding viewDataBinding) {
@@ -132,8 +137,8 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
 
     private void bindLoadUserErrorView(ItemLoadUserErrorBinding viewDataBinding) {
         viewDataBinding.retry.setOnClickListener(v -> {
-            if (onRetryListener != null) {
-                onRetryListener.onRetry();
+            if (onItemListener != null) {
+                onItemListener.onRetry();
             }
         });
     }
@@ -158,12 +163,14 @@ public class UsersAdapter extends BaseAdapter<User, ViewDataBinding> {
         }
     }
 
-    public void setOnRetryListener(OnRetryFetchUsersListener onRetryListener) {
-        this.onRetryListener = onRetryListener;
+    public void setOnItemListener(OnItemListener onItemListener) {
+        this.onItemListener = onItemListener;
     }
 
-    public interface OnRetryFetchUsersListener {
+    public interface OnItemListener {
         void onRetry();
+
+        void onClick(User user);
     }
 
 }

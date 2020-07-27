@@ -1,6 +1,7 @@
 package com.sdt.fossilhometest.ui.sof;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
@@ -27,6 +28,8 @@ public class UsersViewModel extends BaseViewModel {
     private LiveData<NetworkState> networkState;
     private LiveData<PagedList<User>> pagedListUser;
 
+    private MutableLiveData<Filter> filterLiveData;
+
     @Inject
     public UsersViewModel(SchedulerProvider schedulerProvider,
                           UserRepository userRepository) {
@@ -36,6 +39,9 @@ public class UsersViewModel extends BaseViewModel {
     }
 
     private void init() {
+        filterLiveData = new MutableLiveData<>();
+        filterLiveData.setValue(Filter.ALL);
+
         Executor executor = Executors.newFixedThreadPool(Constants.DEFAULT_THREAD_POOL);
 
         PagedList.Config pagedListConfig = (new PagedList.Config.Builder())
@@ -75,6 +81,15 @@ public class UsersViewModel extends BaseViewModel {
 
     public void retryFetchUsers() {
         userDataSourceFactory.doRetry();
+    }
+
+    public MutableLiveData<Filter> getFilterLiveData() {
+        return filterLiveData;
+    }
+
+    public enum  Filter {
+        ALL,
+        BOOKMARK
     }
 
 }

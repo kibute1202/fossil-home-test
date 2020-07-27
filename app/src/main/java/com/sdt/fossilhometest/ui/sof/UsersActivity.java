@@ -1,16 +1,12 @@
 package com.sdt.fossilhometest.ui.sof;
 
 import android.os.Bundle;
-import android.view.ViewStub;
-
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.sdt.fossilhometest.R;
+import com.sdt.fossilhometest.data.model.db.User;
 import com.sdt.fossilhometest.data.remote.NetworkState;
 import com.sdt.fossilhometest.databinding.ActivityUsersBinding;
 import com.sdt.fossilhometest.ui.base.BaseActivity;
-import com.sdt.fossilhometest.utils.BindingUtils;
 
 public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewModel> {
 
@@ -34,34 +30,37 @@ public class UsersActivity extends BaseActivity<ActivityUsersBinding, UsersViewM
         }
 
         usersAdapter = new UsersAdapter();
-        usersAdapter.setOnRetryListener(() -> viewModel.retryFetchUsers());
+        usersAdapter.setOnItemListener(onItemListener);
         viewDataBinding.rvUsers.setAdapter(usersAdapter);
 
         viewDataBinding.swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
     }
 
     private void observeData() {
-        viewModel.getPagedListUser().observe(this, users -> {
-            usersAdapter.submitList(users);
-        });
+        viewModel.getPagedListUser().observe(this, usersAdapter::submitList);
 
-        viewModel.getNetworkState().observe(this, networkState -> {
-            usersAdapter.setNetworkState(networkState);
-            if (networkState == NetworkState.LOADED) {
-                viewDataBinding.swipeRefreshLayout.setRefreshing(false);
-            } else if (networkState.getStatus() == NetworkState.Status.FAILED) {
-                viewDataBinding.swipeRefreshLayout.setRefreshing(false);
-                handleNetworkError(networkState.getCause());
-            }
-        });
+        viewModel.getNetworkState().observe(this, this::handleNetworkState);
     }
 
-    private void handleNetworkError(Throwable cause) {
-        if (usersAdapter.getItemCount() == 0) {
-
-        } else {
-
+    private void handleNetworkState(NetworkState networkState) {
+        usersAdapter.setNetworkState(networkState);
+        if (networkState == NetworkState.LOADED) {
+            viewDataBinding.swipeRefreshLayout.setRefreshing(false);
+        } else if (networkState.getStatus() == NetworkState.Status.FAILED) {
+            viewDataBinding.swipeRefreshLayout.setRefreshing(false);
         }
     }
+
+    private UsersAdapter.OnItemListener onItemListener = new UsersAdapter.OnItemListener() {
+        @Override
+        public void onRetry() {
+            viewModel.retryFetchUsers();
+        }
+
+        @Override
+        public void onClick(User user) {
+
+        }
+    };
 
 }

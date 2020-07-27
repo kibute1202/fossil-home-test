@@ -13,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.sdt.fossilhometest.R;
 
 public final class BindingUtils {
@@ -46,12 +48,16 @@ public final class BindingUtils {
     @BindingAdapter(
         value = {
             "circleImageUrl",
-            "placeholder"
+            "placeholder",
+            "width",
+            "height"
         }
     )
     public static void loadCircleImage(ImageView view,
                                        String url,
-                                       Drawable placeholder) {
+                                       Drawable placeholder,
+                                       int width,
+                                       int height) {
 
         if (TextUtils.isEmpty(url)) {
             view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -65,7 +71,10 @@ public final class BindingUtils {
             Glide.with(view.getContext())
                 .load(url)
                 .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(new ObjectKey(url))
                 .apply(requestOptions)
+                .override(width, height)
                 .into(view);
         }
 
